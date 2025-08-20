@@ -13675,7 +13675,8 @@ function embedAllowed() {
   // Allowed parent URL prefixes for embedding
   var allowedPrefixes = [
     'https://www.staticquasar931.com/gm3z/cookie-clicker/cookie-clicker-main-backup',
-    'https://sites.google.com/view/staticquasar931/gm3z/cookie-clicker/cookie-clicker-main-backup'
+    'https://sites.google.com/view/staticquasar931/gm3z/cookie-clicker/cookie-clicker-main-backup',
+    'https://www.google.com' // Google Sites wrapper origin
   ];
 
   // Check if we are in an iframe
@@ -13683,7 +13684,7 @@ function embedAllowed() {
   try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
   if (!inIframe) return true; // Direct load is fine
 
-  // Get the embedding page’s URL
+  // Get the embedding page’s URL or origin
   var parentUrl = '';
   if (window.location.ancestorOrigins && window.location.ancestorOrigins.length) {
     parentUrl = window.location.ancestorOrigins[0];
