@@ -13670,30 +13670,32 @@ Game.Launch();
 //try {Game.Launch();}
 //catch(err) {console.log('ERROR : '+err.message);}
 
-/* Allow direct loads, and allow iframe embeds ONLY from the exact pages below */
+/* Allow direct loads, and allow iframe embeds ONLY from the allowed URL prefixes below */
 function embedAllowed() {
-  // Exact parent page URLs allowed to embed the game
-  var allowedParentsExact = [
+  // Allowed parent URL prefixes for embedding
+  var allowedPrefixes = [
     'https://www.staticquasar931.com/gm3z/cookie-clicker/cookie-clicker-main-backup',
     'https://sites.google.com/view/staticquasar931/gm3z/cookie-clicker/cookie-clicker-main-backup'
   ];
 
-  // Are we in an iframe?
+  // Check if we are in an iframe
   var inIframe = true;
   try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
-  if (!inIframe) return true; // direct load → allowed
+  if (!inIframe) return true; // Direct load is fine
 
-  // Figure out the embedding page’s full URL
+  // Get the embedding page’s URL
   var parentUrl = '';
-  if (document.referrer) {
-    parentUrl = document.referrer;
-  } else if (window.location.ancestorOrigins && window.location.ancestorOrigins.length) {
+  if (window.location.ancestorOrigins && window.location.ancestorOrigins.length) {
     parentUrl = window.location.ancestorOrigins[0];
+  } else if (document.referrer) {
+    parentUrl = document.referrer;
   }
 
   if (!parentUrl) return false; // No info → block
-  return allowedParentsExact.some(function (allowed) {
-    return parentUrl === allowed || parentUrl.startsWith(allowed + '#') || parentUrl.startsWith(allowed + '?');
+
+  // Allow if the parent URL starts with any allowed prefix
+  return allowedPrefixes.some(function (prefix) {
+    return parentUrl.startsWith(prefix);
   });
 }
 
