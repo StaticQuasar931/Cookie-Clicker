@@ -13663,7 +13663,6 @@ Game.Launch=function()
 	}
 }
 
-
 /*=====================================================================================
 LAUNCH THIS THING
 =======================================================================================*/
@@ -13671,24 +13670,48 @@ Game.Launch();
 //try {Game.Launch();}
 //catch(err) {console.log('ERROR : '+err.message);}
 
-window.onload=function()
-{
-	
-	if (!Game.ready)
-	{
-		if (top!=self) Game.ErrorFrame();
-		else
-		{
-			console.log('[=== '+choose([
-				'Oh, hello!',
-				'hey, how\'s it hangin',
-				'About to cheat in some cookies or just checking for bugs?',
-				'Remember : cheated cookies taste awful!',
-				'Hey, Orteil here. Cheated cookies taste awful... or do they?',
-			])+' ===]');
-			Game.Load();
-			//try {Game.Load();}
-			//catch(err) {console.log('ERROR : '+err.message);}
-		}
-	}
+/* Allow direct loads, and allow iframe embeds ONLY from the exact pages below */
+function embedAllowed() {
+  // Exact parent page URLs allowed to embed the game
+  var allowedParentsExact = [
+    'https://www.staticquasar931.com/gm3z/cookie-clicker/cookie-clicker-main-backup',
+    'https://sites.google.com/view/staticquasar931/gm3z/cookie-clicker/cookie-clicker-main-backup'
+  ];
+
+  // Are we in an iframe?
+  var inIframe = true;
+  try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
+  if (!inIframe) return true; // direct load → allowed
+
+  // Figure out the embedding page’s full URL
+  var parentUrl = '';
+  if (document.referrer) {
+    parentUrl = document.referrer;
+  } else if (window.location.ancestorOrigins && window.location.ancestorOrigins.length) {
+    parentUrl = window.location.ancestorOrigins[0];
+  }
+
+  if (!parentUrl) return false; // No info → block
+  return allowedParentsExact.some(function (allowed) {
+    return parentUrl === allowed || parentUrl.startsWith(allowed + '#') || parentUrl.startsWith(allowed + '?');
+  });
+}
+
+window.onload = function () {
+  if (!Game.ready) {
+    if (!embedAllowed()) {
+      Game.ErrorFrame();
+    } else {
+      console.log('[=== ' + choose([
+        'Oh, hello!',
+        "hey, how's it hangin",
+        'About to cheat in some cookies or just checking for bugs?',
+        'Remember : cheated cookies taste awful!',
+        'Hey, Orteil here. Cheated cookies taste awful... or do they?',
+      ]) + ' ===]');
+      Game.Load();
+      //try {Game.Load();}
+      //catch(err) {console.log('ERROR : '+err.message);}
+    }
+  }
 };
