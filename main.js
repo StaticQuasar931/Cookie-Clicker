@@ -13667,37 +13667,30 @@ Game.Launch=function()
 LAUNCH THIS THING
 =======================================================================================*/
 Game.Launch();
-//try {Game.Launch();}
-//catch(err) {console.log('ERROR : '+err.message);}
 
-/* Allow direct loads, and allow iframe embeds ONLY from the allowed URL prefixes below */
 function embedAllowed() {
-  // Allowed parent URL prefixes for embedding
-  var allowedPrefixes = [
-    'https://www.staticquasar931.com/gm3z/cookie-clicker/cookie-clicker-main-backup',
-    'https://sites.google.com/view/staticquasar931/gm3z/cookie-clicker/cookie-clicker-main-backup',
-    'https://www.google.com' // Google Sites wrapper origin
+  // Allowed parent origins (no full path)
+  var allowedOrigins = [
+    'https://www.staticquasar931.com', // your main site
+    'https://sites.google.com',        // Google Sites embed origin
+    'https://www.google.com'           // Google wrapper in some previews
   ];
 
-  // Check if we are in an iframe
+  // Check if in an iframe
   var inIframe = true;
   try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
   if (!inIframe) return true; // Direct load is fine
 
-  // Get the embedding page’s URL or origin
-  var parentUrl = '';
+  // Get parent origin
+  var parentOrigin = '';
   if (window.location.ancestorOrigins && window.location.ancestorOrigins.length) {
-    parentUrl = window.location.ancestorOrigins[0];
+    parentOrigin = window.location.ancestorOrigins[0];
   } else if (document.referrer) {
-    parentUrl = document.referrer;
+    try { parentOrigin = new URL(document.referrer).origin; } catch (e) {}
   }
 
-  if (!parentUrl) return false; // No info → block
-
-  // Allow if the parent URL starts with any allowed prefix
-  return allowedPrefixes.some(function (prefix) {
-    return parentUrl.startsWith(prefix);
-  });
+  if (!parentOrigin) return false;
+  return allowedOrigins.indexOf(parentOrigin) !== -1;
 }
 
 window.onload = function () {
@@ -13713,8 +13706,7 @@ window.onload = function () {
         'Hey, Orteil here. Cheated cookies taste awful... or do they?',
       ]) + ' ===]');
       Game.Load();
-      //try {Game.Load();}
-      //catch(err) {console.log('ERROR : '+err.message);}
     }
   }
 };
+
