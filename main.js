@@ -13676,10 +13676,6 @@ function embedAllowed() {
     'https://script.google.com/macros/s/'           // Google wrapper in some previews
   ];
 
-  // Check if in an iframe
-  var inIframe = true;
-  try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
-  if (!inIframe) return true; // Direct load is fine
 
   // Get parent origin
   var parentOrigin = '';
