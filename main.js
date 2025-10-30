@@ -13672,10 +13672,14 @@ function embedAllowed() {
   // Allowed parent origins (no full path)
   var allowedOrigins = [
     'https://www.staticquasar931.com', // your main site
-    'https://sites.google.com/view/staticquasar931/',        // Google Sites embed origin
-    'https://script.google.com/macros/s/'           // Google wrapper in some previews
+    'https://sites.google.com',        // Google Sites embed origin
+    'https://www.google.com'           // Google wrapper in some previews
   ];
 
+  // Check if in an iframe
+  var inIframe = true;
+  try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
+  if (!inIframe) return true; // Direct load is fine
 
   // Get parent origin
   var parentOrigin = '';
@@ -13705,4 +13709,3 @@ window.onload = function () {
     }
   }
 };
-
